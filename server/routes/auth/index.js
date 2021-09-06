@@ -55,9 +55,7 @@ router.get("/redirect", auth(), async (ctx) => {
   const hasViewedDocuments = !!view;
 
   ctx.redirect(
-    !hasViewedDocuments && collection
-      ? `${team.url}${collection.url}`
-      : `${team.url}/home`
+    !hasViewedDocuments && collection ? `${team.url}${collection.url}` : `/`
   );
 });
 

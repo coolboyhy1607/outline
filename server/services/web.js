@@ -14,6 +14,7 @@ import env from "../env";
 import routes from "../routes";
 import api from "../routes/api";
 import auth from "../routes/auth";
+import graphql from "../routes/graphql";
 import Sentry from "../sentry";
 
 const isProduction = env.NODE_ENV === "production";
@@ -92,7 +93,7 @@ export default function init(app: Koa = new Koa(), server?: http.Server): Koa {
     app.use(
       convert(
         hotMiddleware(compile, {
-            log: console.log, // eslint-disable-line
+          log: console.log, // eslint-disable-line
           path: "/__webpack_hmr",
           heartbeat: 10 * 1000,
         })
@@ -141,6 +142,7 @@ export default function init(app: Koa = new Koa(), server?: http.Server): Koa {
 
   app.use(mount("/auth", auth));
   app.use(mount("/api", api));
+  app.use(mount("/graphql", graphql));
 
   // Sets common security headers by default, such as no-sniff, hsts, hide powered
   // by etc, these are applied after auth and api so they are only returned on

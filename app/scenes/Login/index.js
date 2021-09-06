@@ -86,7 +86,7 @@ function Login({ location }: Props) {
         <BackIcon color="currentColor" /> {t("Back to home")}
       </Back>
     ) : (
-      <Back href="https://www.getoutline.com">
+      <Back href="/">
         <BackIcon color="currentColor" /> {t("Back to website")}
       </Back>
     ));

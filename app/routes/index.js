@@ -35,8 +35,8 @@ export default function Routes() {
       }
     >
       <Switch>
-        <Route exact path="/explorer" component={Explorer} />
-        <Route exact path="/" component={Login} />
+        <Route exact path="/" component={Explorer} />
+        <Route exact path="/login" component={Login} />
         <Route exact path="/create" component={Login} />
         <Route exact path="/logout" component={Logout} />
         <Route exact path="/share/:shareId" component={KeyedDocument} />

@@ -1,6 +1,5 @@
 // @flow
 // eslint-disable-next-line import/order
-import { buildSchema } from "graphql";
 import env from "./env"; // eslint-disable-line import/order
 import "./tracing"; // must come before importing any instrumented module
 import https from "https";
@@ -8,7 +7,6 @@ import cors from "@koa/cors";
 import debug from "debug";
 import Koa from "koa";
 import compress from "koa-compress";
-import graphqlHTTP from "koa-graphql";
 import helmet from "koa-helmet";
 import logger from "koa-logger";
 import Router from "koa-router";
@@ -51,11 +49,6 @@ async function start(id, disconnect) {
   const httpLogger = debug("http");
   const log = debug("server");
   const router = new Router();
-  const MyGraphQLSchema = buildSchema(`
-    type Query {
-      hello: String
-      }
-  `);
 
   // install basic middleware shared by all services
   app.use(logger((str, args) => httpLogger(str)));
@@ -73,13 +66,6 @@ async function start(id, disconnect) {
     const init = services[name];
     await init(app, server);
   }
-  router.all(
-    "/___graphql",
-    graphqlHTTP({
-      schema: MyGraphQLSchema,
-      graphiql: true,
-    })
-  );
   // install health check endpoint for all services
   router.get("/_health", (ctx) => (ctx.body = "OK"));
   app.use(router.routes());
