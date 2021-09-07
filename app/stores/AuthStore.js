@@ -137,6 +137,7 @@ export default class AuthStore {
       invariant(res && res.data, "Auth not available");
 
       runInAction("AuthStore#fetch", () => {
+        console.log(res);
         this.addPolicies(res.policies);
         const { user, team } = res.data;
         this.user = new User(user);

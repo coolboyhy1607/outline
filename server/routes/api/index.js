@@ -14,6 +14,7 @@ import authenticationProviders from "./authenticationProviders";
 import collections from "./collections";
 import documents from "./documents";
 import events from "./events";
+import explorer from "./explorer";
 import fileOperationsRoute from "./fileOperations";
 import groups from "./groups";
 import hooks from "./hooks";
@@ -64,6 +65,7 @@ router.use("/", attachments.routes());
 router.use("/", utils.routes());
 router.use("/", groups.routes());
 router.use("/", fileOperationsRoute.routes());
+router.use("/", explorer.routes());
 
 router.post("*", (ctx) => {
   ctx.throw(new NotFoundError("Endpoint not found"));

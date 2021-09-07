@@ -15,6 +15,7 @@ import Tabs from "components/Tabs";
 import PaginatedDocumentList from "../components/PaginatedDocumentList";
 import useStores from "../hooks/useStores";
 import NewDocumentMenu from "menus/NewDocumentMenu";
+import { client } from "utils/ApiClient";
 
 export default function Explorer() {
   const { documents, ui, auth } = useStores();
@@ -22,7 +23,10 @@ export default function Explorer() {
   const Login = React.lazy(() =>
     import(/* webpackChunkName: "login" */ "scenes/Login")
   );
-
+  client.get(`/explorer.list`).then((value) => {
+    return value.data;
+    console.log(posts);
+  });
   return (
     <Scene
       icon={<HomeIcon color="currentColor" />}
@@ -36,7 +40,11 @@ export default function Explorer() {
       }
     >
       {!ui.languagePromptDismissed && <LanguagePrompt />}
-      <Heading>{t("Explorer")}</Heading>
+      <div>
+        <h1>{posts.title}</h1>
+        <p>{posts.text}</p>
+      </div>
+      {/* <h1>{posts}</h1> */}
       <Tabs>
         <Tab to="/" exact>
           {t("Recently viewed")}

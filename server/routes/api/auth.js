@@ -102,7 +102,9 @@ router.post("auth.config", async (ctx) => {
 });
 
 router.post("auth.info", auth(), async (ctx) => {
+  console.log(ctx);
   const user = ctx.state.user;
+  console.log(ctx.state);
   const team = await Team.findByPk(user.teamId);
 
   ctx.body = {
