@@ -18,15 +18,20 @@ import NewDocumentMenu from "menus/NewDocumentMenu";
 import { client } from "utils/ApiClient";
 
 export default function Explorer() {
-  const { documents, ui, auth } = useStores();
+  const { explorer, ui } = useStores();
   const { t } = useTranslation();
   const Login = React.lazy(() =>
     import(/* webpackChunkName: "login" */ "scenes/Login")
   );
-  client.get(`/explorer.list`).then((value) => {
-    return value.data;
-    console.log(posts);
-  });
+  const fetchChildDocuments = async (
+    documentId: string
+  ): Promise<?(Explorer[])> => {
+    const res = await client.post(`/explorer.list`);
+    const { data } = res;
+    console.log(data);
+    return data;
+  };
+  const dataPost = fetchChildDocuments();
   return (
     <Scene
       icon={<HomeIcon color="currentColor" />}
@@ -41,8 +46,8 @@ export default function Explorer() {
     >
       {!ui.languagePromptDismissed && <LanguagePrompt />}
       <div>
-        <h1>{posts.title}</h1>
-        <p>{posts.text}</p>
+        <h1>{dataPost[1].title}</h1>
+        <p>{dataPost[1].text}</p>
       </div>
       {/* <h1>{posts}</h1> */}
       <Tabs>
@@ -54,7 +59,7 @@ export default function Explorer() {
         <Route path="/">
           <PaginatedDocumentList
             key="recent"
-            documents={documents.recentlyViewed}
+            documents={explorer.all}
             empty={
               <Empty>
                 {t(

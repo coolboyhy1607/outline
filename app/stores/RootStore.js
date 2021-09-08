@@ -6,6 +6,7 @@ import CollectionsStore from "./CollectionsStore";
 import DocumentPresenceStore from "./DocumentPresenceStore";
 import DocumentsStore from "./DocumentsStore";
 import EventsStore from "./EventsStore";
+import ExplorerStore from "./ExplorerStore";
 import FileOperationsStore from "./FileOperationsStore";
 import GroupMembershipsStore from "./GroupMembershipsStore";
 import GroupsStore from "./GroupsStore";
@@ -26,6 +27,7 @@ export default class RootStore {
   collections: CollectionsStore;
   collectionGroupMemberships: CollectionGroupMembershipsStore;
   documents: DocumentsStore;
+  explorer: ExplorerStore;
   events: EventsStore;
   groups: GroupsStore;
   groupMemberships: GroupMembershipsStore;
@@ -50,6 +52,7 @@ export default class RootStore {
     this.collections = new CollectionsStore(this);
     this.collectionGroupMemberships = new CollectionGroupMembershipsStore(this);
     this.documents = new DocumentsStore(this);
+    this.explorer = new ExplorerStore(this);
     this.events = new EventsStore(this);
     this.groups = new GroupsStore(this);
     this.groupMemberships = new GroupMembershipsStore(this);

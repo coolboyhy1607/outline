@@ -1,6 +1,6 @@
 // @flow
 import RootStore from "stores/RootStore";
 
-const stores = new RootStore();
+const stores = (window.store = new RootStore());
 
 export default stores;
