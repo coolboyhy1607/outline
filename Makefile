@@ -1,5 +1,4 @@
 up:
-	docker-compose up -d redis postgres s3
 	yarn install --pure-lockfile
 	yarn sequelize db:migrate
 	yarn dev
