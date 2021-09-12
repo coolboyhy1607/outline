@@ -1,7 +1,7 @@
 up:
 	yarn install --pure-lockfile
 	yarn sequelize db:migrate
-	yarn dev
+	yarn dev:watch
 
 build:
 	docker-compose build --pull outline
