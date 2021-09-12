@@ -37,7 +37,7 @@ if (SLACK_CLIENT_ID) {
     {
       clientID: SLACK_CLIENT_ID,
       clientSecret: SLACK_CLIENT_SECRET,
-      callbackURL: `${env.URL}/auth/slack.callback`,
+      callbackURL: `https://localhost:3000/auth/slack.callback`,
       passReqToCallback: true,
       store: new StateStore(),
       scope: scopes,

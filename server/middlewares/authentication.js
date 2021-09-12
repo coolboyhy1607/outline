@@ -35,7 +35,8 @@ export default function auth(options?: { required?: boolean } = {}) {
     }
 
     if (!token && options.required !== false) {
-      throw new AuthenticationError("Authentication required");
+      ctx.state.token = null;
+      ctx.state.user = "guest";
     }
 
     let user;

@@ -18,20 +18,13 @@ import NewDocumentMenu from "menus/NewDocumentMenu";
 import { client } from "utils/ApiClient";
 
 export default function Explorer() {
-  const { explorer, ui } = useStores();
+  const { explorer, ui, auth } = useStores();
+  console.log(auth.user);
+  auth.fetch();
   const { t } = useTranslation();
   const Login = React.lazy(() =>
     import(/* webpackChunkName: "login" */ "scenes/Login")
   );
-  const fetchChildDocuments = async (
-    documentId: string
-  ): Promise<?(Explorer[])> => {
-    const res = await client.post(`/explorer.list`);
-    const { data } = res;
-    console.log(data);
-    return data;
-  };
-  const dataPost = fetchChildDocuments();
   return (
     <Scene
       icon={<HomeIcon color="currentColor" />}
@@ -45,10 +38,10 @@ export default function Explorer() {
       }
     >
       {!ui.languagePromptDismissed && <LanguagePrompt />}
-      <div>
+      {/* <div>
         <h1>{dataPost[1].title}</h1>
         <p>{dataPost[1].text}</p>
-      </div>
+      </div> */}
       {/* <h1>{posts}</h1> */}
       <Tabs>
         <Tab to="/" exact>
@@ -58,15 +51,9 @@ export default function Explorer() {
       <Switch>
         <Route path="/">
           <PaginatedDocumentList
-            key="recent"
-            documents={explorer.all}
-            empty={
-              <Empty>
-                {t(
-                  "Documents you’ve recently viewed will be here for easy access"
-                )}
-              </Empty>
-            }
+            documents={explorer.recentlyUpdated}
+            fetch={explorer.fetchRecentlyUpdated}
+            empty={<Empty>{t("Weird, this shouldn’t ever be empty")}</Empty>}
             showCollection
           />
         </Route>

@@ -15,8 +15,8 @@ const AUTH_STORE = "AUTH_STORE";
 const NO_REDIRECT_PATHS = ["/", "/create", "/home"];
 
 type PersistedData = {
-  user?: User,
-  team?: Team,
+  user?: User | string,
+  team?: Team | string,
   policies?: Policy[],
 };
 
@@ -33,8 +33,8 @@ type Config = {|
 |};
 
 export default class AuthStore {
-  @observable user: ?User;
-  @observable team: ?Team;
+  @observable user: ?User | "guest";
+  @observable team: ?Team | "guestTeam";
   @observable token: ?string;
   @observable policies: Policy[] = [];
   @observable lastSignedIn: ?string;
@@ -51,10 +51,11 @@ export default class AuthStore {
     let data: PersistedData = {};
     try {
       data = JSON.parse(localStorage.getItem(AUTH_STORE) || "{}");
+      console.log("Data from AuthStore", data);
     } catch (_) {
       // no-op Safari private mode
     }
-
+    data.policies = Array(data.policies);
     this.rehydrate(data);
 
     // persists this entire store to localstorage whenever any keys are changed
@@ -105,6 +106,7 @@ export default class AuthStore {
     if (policies) {
       // cache policies in this store so that they are persisted between sessions
       this.policies = policies;
+      console.log(this.policies);
       policies.forEach((policy) => this.rootStore.policies.add(policy));
     }
   }
@@ -137,11 +139,15 @@ export default class AuthStore {
       invariant(res && res.data, "Auth not available");
 
       runInAction("AuthStore#fetch", () => {
-        console.log(res);
-        this.addPolicies(res.policies);
         const { user, team } = res.data;
-        this.user = new User(user);
-        this.team = new Team(team);
+        this.addPolicies(res.policies);
+        if (user !== "guest") {
+          this.user = new User(user);
+          this.team = new Team(team);
+        } else {
+          this.user = "guest";
+          this.team = "guestTeam";
+        }
 
         if (env.SENTRY_DSN) {
           Sentry.configureScope(function (scope) {

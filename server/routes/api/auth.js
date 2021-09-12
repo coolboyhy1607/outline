@@ -102,18 +102,26 @@ router.post("auth.config", async (ctx) => {
 });
 
 router.post("auth.info", auth(), async (ctx) => {
-  console.log(ctx);
   const user = ctx.state.user;
-  console.log(ctx.state);
-  const team = await Team.findByPk(user.teamId);
-
-  ctx.body = {
-    data: {
-      user: presentUser(user, { includeDetails: true }),
-      team: presentTeam(team),
-    },
-    policies: presentPolicies(user, [team]),
-  };
+  if (user !== "guest") {
+    const team = await Team.findByPk(user.teamId);
+    ctx.body = {
+      data: {
+        user: presentUser(user, { includeDetails: true }),
+        team: presentTeam(team),
+      },
+      policies: presentPolicies(user, [team]),
+    };
+  } else {
+    const team = { id: "guestTeamId" };
+    ctx.body = {
+      data: {
+        user: "guest",
+        team: "guestTeam",
+      },
+      policies: presentPolicies(user, [team]),
+    };
+  }
 });
 
 export default router;

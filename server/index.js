@@ -2,7 +2,7 @@
 // eslint-disable-next-line import/order
 import env from "./env"; // eslint-disable-line import/order
 import "./tracing"; // must come before importing any instrumented module
-import https from "https";
+import http from "http";
 import cors from "@koa/cors";
 import debug from "debug";
 import Koa from "koa";
@@ -18,11 +18,11 @@ import services from "./services";
 import { checkEnv, checkMigrations } from "./utils/startup";
 import { checkUpdates } from "./utils/updates";
 
-const fs = require("fs");
-const options = {
-  key: fs.readFileSync("./server/localhost-key.pem"),
-  cert: fs.readFileSync("./server/localhost.pem"),
-};
+// const fs = require("fs");
+// const options = {
+//   key: fs.readFileSync("./server/localhost-key.pem"),
+//   cert: fs.readFileSync("./server/localhost.pem"),
+// };
 
 checkEnv();
 checkMigrations();
@@ -45,7 +45,7 @@ const serviceNames = uniq(
 
 async function start(id, disconnect) {
   const app = new Koa();
-  const server = stoppable(https.createServer(options, app.callback()));
+  const server = stoppable(http.createServer(app.callback()));
   const httpLogger = debug("http");
   const log = debug("server");
   const router = new Router();

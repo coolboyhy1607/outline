@@ -42,6 +42,17 @@ const sharedTreeCache = {};
 
 @observer
 class DataLoader extends React.Component<Props> {
+  /*
+  1. The constructor takes a single argument, which is the tree that the node is in.
+  2. The constructor calls the superclass constructor, passing it the tree that the node is in.
+  3. The constructor sets the node’s parent to null.
+  4. The constructor sets the node’s children to an empty list.
+  5. The constructor sets the node’s name to the name argument.
+  6. The constructor sets the node’s depth to 0.
+  7. The constructor sets the node’s path to an empty list.
+  8. The constructor sets the node’s tree to the tree argument.
+  9. The constructor sets the node’s sharedTree to null.
+  */
   sharedTree: ?NavigationNode;
   @observable document: ?Document;
   @observable revision: ?Revision;

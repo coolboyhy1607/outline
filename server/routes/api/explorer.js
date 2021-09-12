@@ -36,39 +36,95 @@ import { sequelize } from "../../sequelize";
 import pagination from "./middlewares/pagination";
 
 const Op = Sequelize.Op;
+const { authorize, cannot, can } = policy;
 const router = new Router();
 
-router.post("explorer.list", pagination(), async (ctx) => {
-  let { sort = "updatedAt", backlinkDocumentId, parentDocumentId } = ctx.body;
+router.post("explorer.list", auth(), pagination(), async (ctx) => {
+  let {
+    sort = "updatedAt",
+    template,
+    backlinkDocumentId,
+    parentDocumentId,
+  } = ctx.body;
 
+  // collection and user are here for backwards compatibility
+  const collectionId = ctx.body.collectionId || ctx.body.collection;
+  const createdById = ctx.body.userId || ctx.body.user;
+  let direction = ctx.body.direction;
+  if (direction !== "ASC") direction = "DESC";
+
+  // always filter by the current team
+  const user = ctx.state.user;
   let where = {};
+  //   teamId: user.teamId,
+  //   archivedAt: {
+  //     [Op.eq]: null,
+  //   },
+  // };
 
-  if (parentDocumentId) {
-    ctx.assertUuid(parentDocumentId, "parentDocumentId must be a UUID");
-    where = { ...where, parentDocumentId };
-  }
+  // if (template) {
+  //   where = { ...where, template: true };
+  // }
+
+  // if a specific user is passed then add to filters. If the user doesn't
+  // exist in the team then nothing will be returned, so no need to check auth
+  // if (createdById) {
+  //   ctx.assertUuid(createdById, "user must be a UUID");
+  //   where = { ...where, createdById };
+  // }
+
+  let documentIds = [];
+  // if a specific collection is passed then we need to check auth to view it
+  // if (collectionId) {
+  //   ctx.assertUuid(collectionId, "collection must be a UUID");
+
+  //   where = { ...where, collectionId };
+  //   const collection = await Collection.scope({
+  //     method: ["withMembership", user.id],
+  //   }).findByPk(collectionId);
+  //   authorize(user, "read", collection);
+
+  //   // index sort is special because it uses the order of the documents in the
+  //   // collection.documentStructure rather than a database column
+  //   if (sort === "index") {
+  //     documentIds = collection.documentStructure
+  //       .map((node) => node.id)
+  //       .slice(ctx.state.pagination.offset, ctx.state.pagination.limit);
+  //     where = { ...where, id: documentIds };
+  //   }
+
+  //   // otherwise, filter by all collections the user has access to
+  // } else {
+  //   const collectionIds = await user.collectionIds();
+  //   where = { ...where, collectionId: collectionIds };
+  // }
+
+  // if (parentDocumentId) {
+  //   ctx.assertUuid(parentDocumentId, "parentDocumentId must be a UUID");
+  //   where = { ...where, parentDocumentId };
+  // }
 
   // Explicitly passing 'null' as the parentDocumentId allows listing documents
   // that have no parent document (aka they are at the root of the collection)
-  if (parentDocumentId === null) {
-    where = { ...where, parentDocumentId: { [Op.eq]: null } };
-  }
+  // if (parentDocumentId === null) {
+  //   where = { ...where, parentDocumentId: { [Op.eq]: null } };
+  // }
 
-  if (backlinkDocumentId) {
-    ctx.assertUuid(backlinkDocumentId, "backlinkDocumentId must be a UUID");
+  // if (backlinkDocumentId) {
+  //   ctx.assertUuid(backlinkDocumentId, "backlinkDocumentId must be a UUID");
 
-    const backlinks = await Backlink.findAll({
-      attributes: ["reverseDocumentId"],
-      where: {
-        documentId: backlinkDocumentId,
-      },
-    });
+  //   const backlinks = await Backlink.findAll({
+  //     attributes: ["reverseDocumentId"],
+  //     where: {
+  //       documentId: backlinkDocumentId,
+  //     },
+  //   });
 
-    where = {
-      ...where,
-      id: backlinks.map((backlink) => backlink.reverseDocumentId),
-    };
-  }
+  //   where = {
+  //     ...where,
+  //     id: backlinks.map((backlink) => backlink.reverseDocumentId),
+  //   };
+  // }
 
   if (sort === "index") {
     sort = "updatedAt";
@@ -77,24 +133,33 @@ router.post("explorer.list", pagination(), async (ctx) => {
   ctx.assertSort(sort, Document);
 
   // add the users starred state to the response by default
-  //   const starredScope = { method: ["withStarred", user.id] };
-  //   const collectionScope = { method: ["withCollection", user.id] };
-  //   const viewScope = { method: ["withViews", user.id] };
-  const explorer = await Document.findAll();
+  // const starredScope = { method: ["withStarred", user.id] };
+  // const collectionScope = { method: ["withCollection", user.id] };
+  // const viewScope = { method: ["withViews", user.id] };
+  const documents = await Document.scope("defaultScope").findAll({
+    order: [[sort, direction]],
+    offset: ctx.state.pagination.offset,
+    limit: ctx.state.pagination.limit,
+  });
 
   // index sort is special because it uses the order of the documents in the
   // collection.documentStructure rather than a database column
+  if (documentIds.length) {
+    documents.sort(
+      (a, b) => documentIds.indexOf(a.id) - documentIds.indexOf(b.id)
+    );
+  }
 
   const data = await Promise.all(
-    explorer.map((document) => presentDocument(document))
+    documents.map((document) => presentDocument(document))
   );
 
-  //   const policies = presentPolicies(user, documents);
+  const policies = presentPolicies(user, documents);
 
   ctx.body = {
     pagination: ctx.state.pagination,
     data,
-    // policies,
+    policies,
   };
 });
 

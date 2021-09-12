@@ -41,6 +41,7 @@ export default class BaseStore<T: BaseModel> {
 
   addPolicies = (policies) => {
     if (policies) {
+      console.log("Policies   ", policies);
       policies.forEach((policy) => this.rootStore.policies.add(policy));
     }
   };

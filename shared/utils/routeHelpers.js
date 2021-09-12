@@ -9,7 +9,7 @@ export function slackAuth(
     "identity.team",
   ],
   clientId: string = process.env.SLACK_KEY,
-  redirectUri: string = `${process.env.URL}/auth/slack.callback`
+  redirectUri: string = `https://localhost:3000/auth/slack.callback`
 ): string {
   const baseUrl = "https://slack.com/oauth/authorize";
   const params = {

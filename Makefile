@@ -1,6 +1,7 @@
 up:
-	yarn install --pure-lockfile
-	yarn sequelize db:migrate
+	docker-compose up -d redis
+	# yarn install --pure-lockfile
+	# yarn sequelize db:migrate
 	yarn dev
 
 build:

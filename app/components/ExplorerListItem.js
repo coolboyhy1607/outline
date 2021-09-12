@@ -42,39 +42,13 @@ function replaceResultMarks(tag: string) {
   return tag.replace(/<b\b[^>]*>(.*?)<\/b>/gi, "$1");
 }
 
-function DocumentListItem(props: Props, ref) {
+function ExplorerListItem(props: Props, ref) {
   const { t } = useTranslation();
-  const { policies } = useStores();
-  const currentUser = useCurrentUser();
-  const currentTeam = useCurrentTeam();
-  const [menuOpen, handleMenuOpen, handleMenuClose] = useBoolean();
-  const {
-    document,
-    showNestedDocuments,
-    showCollection,
-    showPublished,
-    showPin,
-    showDraft = true,
-    showTemplate,
-    highlight,
-    context,
-  } = props;
-
-  const queryIsInTitle =
-    !!highlight &&
-    !!document.title.toLowerCase().includes(highlight.toLowerCase());
-  const canStar =
-    !document.isDraft && !document.isArchived && !document.isTemplate;
-  const can = policies.abilities(currentTeam.id);
-  console.log("Can policy in DocumentListItem", can);
-  const canCollection = policies.abilities(document.collectionId);
-
+  const { document, showCollection, highlight } = props;
   return (
     <DocumentLink
       ref={ref}
       dir={document.dir}
-      $isStarred={document.isStarred}
-      $menuOpen={menuOpen}
       to={{
         pathname: document.url,
         state: { title: document.titleWithDefault },
@@ -87,71 +61,13 @@ function DocumentListItem(props: Props, ref) {
             highlight={highlight}
             dir={document.dir}
           />
-          {document.isNew && document.createdBy.id !== currentUser.id && (
-            <Badge yellow>{t("New")}</Badge>
-          )}
-          {canStar && (
-            <StarPositioner>
-              <StarButton document={document} />
-            </StarPositioner>
-          )}
-          {document.isDraft && showDraft && (
-            <Tooltip
-              tooltip={t("Only visible to you")}
-              delay={500}
-              placement="top"
-            >
-              <Badge>{t("Draft")}</Badge>
-            </Tooltip>
-          )}
-          {document.isTemplate && showTemplate && (
-            <Badge primary>{t("Template")}</Badge>
-          )}
         </Heading>
-
-        {!queryIsInTitle && (
-          <ResultContext
-            text={context}
-            highlight={highlight ? SEARCH_RESULT_REGEX : undefined}
-            processResult={replaceResultMarks}
-          />
-        )}
         <DocumentMeta
           document={document}
           showCollection={showCollection}
-          showPublished={showPublished}
-          showNestedDocuments={showNestedDocuments}
           showLastViewed
         />
       </Content>
-      <Actions>
-        {document.isTemplate &&
-          !document.isArchived &&
-          !document.isDeleted &&
-          can.createDocument &&
-          canCollection.update && (
-            <>
-              <Button
-                as={Link}
-                to={newDocumentUrl(document.collectionId, {
-                  templateId: document.id,
-                })}
-                icon={<PlusIcon />}
-                neutral
-              >
-                {t("New doc")}
-              </Button>
-              &nbsp;
-            </>
-          )}
-        <DocumentMenu
-          document={document}
-          showPin={showPin}
-          onOpen={handleMenuOpen}
-          onClose={handleMenuClose}
-          modal={false}
-        />
-      </Actions>
     </DocumentLink>
   );
 }
@@ -262,4 +178,4 @@ const ResultContext = styled(Highlight)`
   margin-bottom: 0.25em;
 `;
 
-export default observer(React.forwardRef(DocumentListItem));
+export default observer(React.forwardRef(ExplorerListItem));

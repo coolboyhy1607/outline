@@ -49,6 +49,7 @@ router.post("documents.list", auth(), pagination(), async (ctx) => {
 
   // collection and user are here for backwards compatibility
   const collectionId = ctx.body.collectionId || ctx.body.collection;
+  console.log("collectionId: " + collectionId);
   const createdById = ctx.body.userId || ctx.body.user;
   let direction = ctx.body.direction;
   if (direction !== "ASC") direction = "DESC";
