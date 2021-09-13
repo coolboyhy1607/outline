@@ -4,3 +4,4 @@ node_modules
 build/*
 server/localhost-key.pem
 server/localhost.pem
+.env
