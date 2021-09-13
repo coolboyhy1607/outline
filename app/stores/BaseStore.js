@@ -41,7 +41,6 @@ export default class BaseStore<T: BaseModel> {
 
   addPolicies = (policies) => {
     if (policies) {
-      console.log("Policies   ", policies);
       policies.forEach((policy) => this.rootStore.policies.add(policy));
     }
   };
@@ -190,6 +189,7 @@ export default class BaseStore<T: BaseModel> {
 
   @computed
   get orderedData(): T[] {
+    console.log("this.data.value", Array.from(this.data.values()));
     return orderBy(Array.from(this.data.values()), "createdAt", "desc");
   }
 }

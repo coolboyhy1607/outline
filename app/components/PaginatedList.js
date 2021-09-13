@@ -116,6 +116,8 @@ class PaginatedList extends React.Component<Props> {
     const showList =
       (this.isLoaded || this.isInitiallyLoaded) && !showLoading && !showEmpty;
     console.log(
+      "item",
+      items,
       "showList",
       showList,
       "isLoaded",

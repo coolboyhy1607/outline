@@ -25,7 +25,6 @@ function DropToImport({ disabled, children, collectionId, documentId }: Props) {
     collectionId,
     documentId
   );
-
   const can = policies.abilities(collectionId);
 
   const handleRejection = React.useCallback(() => {

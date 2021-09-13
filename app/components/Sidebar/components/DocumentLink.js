@@ -207,7 +207,6 @@ function DocumentLink(
       isOverReorder: !!monitor.isOver(),
     }),
   });
-
   return (
     <>
       <Relative onDragLeave={resetHoverExpanding}>
@@ -218,7 +217,11 @@ function DocumentLink(
           $isMoving={isMoving}
         >
           <div ref={dropToReparent}>
-            <DropToImport documentId={node.id} activeClassName="activeDropZone">
+            <DropToImport
+              documentId={node.id}
+              collectionId={collection.id}
+              activeClassName="activeDropZone"
+            >
               <SidebarLink
                 onMouseEnter={handleMouseEnter}
                 to={{
