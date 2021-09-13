@@ -34,7 +34,6 @@ function DropToImport({ disabled, children, collectionId, documentId }: Props) {
       { type: "error" }
     );
   }, [t, showToast]);
-
   if (disabled || !can.update) {
     return children;
   }
