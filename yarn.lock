@@ -8930,6 +8930,16 @@ koa-easy-ws@^1.3.0:
     debug "^4.1.1"
     ws "^7.3.1"
 
+koa-graphql@^0.9.0:
+  version "0.9.0"
+  resolved "https://registry.yarnpkg.com/koa-graphql/-/koa-graphql-0.9.0.tgz#3f094efb81dd6a423bd2ee4650ecd8c07130bb31"
+  integrity sha512-DnHI/n8R9EJbAfMQXJw0OgNnMTtw4978eQaPOztKk3x5fZwoJxyfg9x8aQpZLh5gN67FH4lmoH+8/P9auRIorA==
+  dependencies:
+    babel-runtime "^6.26.0"
+    express-graphql "0.9.0"
+    http-errors "^1.7.3"
+    thenify "^3.3.0"
+
 koa-helmet@5.2.0:
   version "5.2.0"
   resolved "https://registry.yarnpkg.com/koa-helmet/-/koa-helmet-5.2.0.tgz#6529f64dd4539261a9bb0a56e201e4976f0200f0"
