@@ -51,7 +51,6 @@ export default class AuthStore {
     let data: PersistedData = {};
     try {
       data = JSON.parse(localStorage.getItem(AUTH_STORE) || "{}");
-      console.log("Data from AuthStore", data);
     } catch (_) {
       // no-op Safari private mode
     }
@@ -106,7 +105,6 @@ export default class AuthStore {
     if (policies) {
       // cache policies in this store so that they are persisted between sessions
       this.policies = policies;
-      console.log(this.policies);
       policies.forEach((policy) => this.rootStore.policies.add(policy));
     }
   }

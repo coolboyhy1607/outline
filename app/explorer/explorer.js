@@ -19,12 +19,12 @@ import { client } from "utils/ApiClient";
 
 export default function Explorer() {
   const { explorer, ui, auth } = useStores();
-  console.log(auth.user);
-  auth.fetch();
   const { t } = useTranslation();
   const Login = React.lazy(() =>
     import(/* webpackChunkName: "login" */ "scenes/Login")
   );
+  explorer.fetchRecentlyUpdated();
+
   return (
     <Scene
       icon={<HomeIcon color="currentColor" />}

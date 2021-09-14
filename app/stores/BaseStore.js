@@ -189,7 +189,6 @@ export default class BaseStore<T: BaseModel> {
 
   @computed
   get orderedData(): T[] {
-    console.log("this.data.value", Array.from(this.data.values()));
     return orderBy(Array.from(this.data.values()), "createdAt", "desc");
   }
 }

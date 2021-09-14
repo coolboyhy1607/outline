@@ -8,7 +8,7 @@ import { subtractDate } from "shared/utils/date";
 import naturalSort from "shared/utils/naturalSort";
 import BaseStore from "stores/BaseStore";
 import RootStore from "stores/RootStore";
-import Document from "models/Document";
+import Explorer from "models/Explorer";
 import env from "env";
 import type {
   NavigationNode,
@@ -22,7 +22,7 @@ type ImportOptions = {
   publish?: boolean,
 };
 
-export default class ExplorerStore extends BaseStore<Document> {
+export default class ExplorerStore extends BaseStore<Explorer> {
   @observable searchCache: Map<string, SearchResult[]> = new Map();
   @observable starredIds: Map<string, boolean> = new Map();
   @observable backlinks: Map<string, string[]> = new Map();
@@ -40,11 +40,11 @@ export default class ExplorerStore extends BaseStore<Document> {
   ];
 
   constructor(rootStore: RootStore) {
-    super(rootStore, Document);
+    super(rootStore, Explorer);
   }
 
   @computed
-  get all(): Document[] {
+  get all(): Explorer[] {
     return filter(
       this.orderedData,
       (d) => !d.archivedAt && !d.deletedAt && !d.template
@@ -52,7 +52,7 @@ export default class ExplorerStore extends BaseStore<Document> {
   }
 
   @computed
-  get recentlyViewed(): Document[] {
+  get recentlyViewed(): Explorer[] {
     return orderBy(
       filter(this.all, (d) => d.lastViewedAt),
       "lastViewedAt",
@@ -61,11 +61,11 @@ export default class ExplorerStore extends BaseStore<Document> {
   }
 
   @computed
-  get recentlyUpdated(): Document[] {
+  get recentlyUpdated(): Explorer[] {
     return orderBy(this.all, "updatedAt", "desc");
   }
 
-  get templates(): Document[] {
+  get templates(): Explorer[] {
     return orderBy(
       filter(
         this.orderedData,
@@ -76,7 +76,7 @@ export default class ExplorerStore extends BaseStore<Document> {
     );
   }
 
-  createdByUser(userId: string): Document[] {
+  createdByUser(userId: string): Explorer[] {
     return orderBy(
       filter(this.all, (d) => d.createdBy.id === userId),
       "updatedAt",
@@ -84,14 +84,14 @@ export default class ExplorerStore extends BaseStore<Document> {
     );
   }
 
-  inCollection(collectionId: string): Document[] {
+  inCollection(collectionId: string): Explorer[] {
     return filter(
       this.all,
       (document) => document.collectionId === collectionId
     );
   }
 
-  templatesInCollection(collectionId: string): Document[] {
+  templatesInCollection(collectionId: string): Explorer[] {
     return orderBy(
       filter(
         this.orderedData,
@@ -106,14 +106,14 @@ export default class ExplorerStore extends BaseStore<Document> {
     );
   }
 
-  pinnedInCollection(collectionId: string): Document[] {
+  pinnedInCollection(collectionId: string): Explorer[] {
     return filter(
       this.recentlyUpdatedInCollection(collectionId),
       (document) => document.pinned
     );
   }
 
-  publishedInCollection(collectionId: string): Document[] {
+  publishedInCollection(collectionId: string): Explorer[] {
     return filter(
       this.all,
       (document) =>
@@ -121,7 +121,7 @@ export default class ExplorerStore extends BaseStore<Document> {
     );
   }
 
-  rootInCollection(collectionId: string): Document[] {
+  rootInCollection(collectionId: string): Explorer[] {
     const collection = this.rootStore.collections.get(collectionId);
     if (!collection) {
       return [];
@@ -130,15 +130,15 @@ export default class ExplorerStore extends BaseStore<Document> {
     return compact(collection.documents.map((node) => this.get(node.id)));
   }
 
-  leastRecentlyUpdatedInCollection(collectionId: string): Document[] {
+  leastRecentlyUpdatedInCollection(collectionId: string): Explorer[] {
     return orderBy(this.inCollection(collectionId), "updatedAt", "asc");
   }
 
-  recentlyUpdatedInCollection(collectionId: string): Document[] {
+  recentlyUpdatedInCollection(collectionId: string): Explorer[] {
     return orderBy(this.inCollection(collectionId), "updatedAt", "desc");
   }
 
-  recentlyPublishedInCollection(collectionId: string): Document[] {
+  recentlyPublishedInCollection(collectionId: string): Explorer[] {
     return orderBy(
       this.publishedInCollection(collectionId),
       "publishedAt",
@@ -146,7 +146,7 @@ export default class ExplorerStore extends BaseStore<Document> {
     );
   }
 
-  alphabeticalInCollection(collectionId: string): Document[] {
+  alphabeticalInCollection(collectionId: string): Explorer[] {
     return naturalSort(this.inCollection(collectionId), "title");
   }
 
@@ -154,7 +154,7 @@ export default class ExplorerStore extends BaseStore<Document> {
     return this.searchCache.get(query) || [];
   }
 
-  get starred(): Document[] {
+  get starred(): Explorer[] {
     return orderBy(
       filter(this.all, (d) => d.isStarred),
       "updatedAt",
@@ -163,7 +163,7 @@ export default class ExplorerStore extends BaseStore<Document> {
   }
 
   @computed
-  get archived(): Document[] {
+  get archived(): Explorer[] {
     return filter(
       orderBy(this.orderedData, "archivedAt", "desc"),
       (d) => d.archivedAt && !d.deletedAt
@@ -171,7 +171,7 @@ export default class ExplorerStore extends BaseStore<Document> {
   }
 
   @computed
-  get deleted(): Document[] {
+  get deleted(): Explorer[] {
     return filter(
       orderBy(this.orderedData, "deletedAt", "desc"),
       (d) => d.deletedAt
@@ -179,12 +179,12 @@ export default class ExplorerStore extends BaseStore<Document> {
   }
 
   @computed
-  get starredAlphabetical(): Document[] {
+  get starredAlphabetical(): Explorer[] {
     return naturalSort(this.starred, "title");
   }
 
   @computed
-  get templatesAlphabetical(): Document[] {
+  get templatesAlphabetical(): Explorer[] {
     return naturalSort(this.templates, "title");
   }
 
@@ -199,7 +199,7 @@ export default class ExplorerStore extends BaseStore<Document> {
       dateFilter?: "day" | "week" | "month" | "year",
       collectionId?: string,
     } = {}
-  ): Document[] => {
+  ): Explorer[] => {
     let drafts = filter(
       orderBy(this.all, "updatedAt", "desc"),
       (doc) => !doc.publishedAt
@@ -222,14 +222,14 @@ export default class ExplorerStore extends BaseStore<Document> {
   };
 
   @computed
-  get active(): ?Document {
+  get active(): ?Explorer {
     return this.rootStore.ui.activeDocumentId
       ? this.data.get(this.rootStore.ui.activeDocumentId)
       : undefined;
   }
 
   @action
-  fetchBacklinks = async (documentId: string): Promise<?(Document[])> => {
+  fetchBacklinks = async (documentId: string): Promise<?(Explorer[])> => {
     const res = await client.post(`/explorer.list`, {
       backlinkDocumentId: documentId,
     });
@@ -245,7 +245,7 @@ export default class ExplorerStore extends BaseStore<Document> {
     });
   };
 
-  getBacklinedDocuments(documentId: string): Document[] {
+  getBacklinedDocuments(documentId: string): Explorer[] {
     const documentIds = this.backlinks.get(documentId) || [];
     return orderBy(
       compact(documentIds.map((id) => this.data.get(id))),
@@ -255,7 +255,7 @@ export default class ExplorerStore extends BaseStore<Document> {
   }
 
   @action
-  fetchChildDocuments = async (documentId: string): Promise<?(Document[])> => {
+  fetchChildDocuments = async (documentId: string): Promise<?(Explorer[])> => {
     const res = await client.post(`/explorer.list`, {
       parentDocumentId: documentId,
     });
@@ -271,7 +271,7 @@ export default class ExplorerStore extends BaseStore<Document> {
   fetchNamedPage = async (
     request: string = "list",
     options: ?Object
-  ): Promise<?(Document[])> => {
+  ): Promise<?(Explorer[])> => {
     this.isFetching = true;
 
     try {
@@ -431,8 +431,8 @@ export default class ExplorerStore extends BaseStore<Document> {
   };
 
   @action
-  templatize = async (id: string): Promise<?Document> => {
-    const doc: ?Document = this.data.get(id);
+  templatize = async (id: string): Promise<?Explorer> => {
+    const doc: ?Explorer = this.data.get(id);
     invariant(doc, "Document should exist");
 
     if (doc.template) {
@@ -452,11 +452,11 @@ export default class ExplorerStore extends BaseStore<Document> {
   fetch = async (
     id: string,
     options: FetchOptions = {}
-  ): Promise<{ document: ?Document, sharedTree?: NavigationNode }> => {
+  ): Promise<{ document: ?Explorer, sharedTree?: NavigationNode }> => {
     if (!options.prefetch) this.isFetching = true;
 
     try {
-      const doc: ?Document = this.data.get(id) || this.getByUrl(id);
+      const doc: ?Explorer = this.data.get(id) || this.getByUrl(id);
       const policy = doc ? this.rootStore.policies.get(doc.id) : undefined;
       if (doc && policy && !options.force) {
         return { document: doc };
@@ -508,7 +508,7 @@ export default class ExplorerStore extends BaseStore<Document> {
   };
 
   @action
-  duplicate = async (document: Document): * => {
+  duplicate = async (document: Explorer): * => {
     const append = " (duplicate)";
 
     const res = await client.post("/documents.create", {
@@ -616,7 +616,7 @@ export default class ExplorerStore extends BaseStore<Document> {
   }
 
   @action
-  async delete(document: Document, options?: {| permanent: boolean |}) {
+  async delete(document: Explorer, options?: {| permanent: boolean |}) {
     await super.delete(document, options);
 
     // check to see if we have any shares related to this document already
@@ -631,11 +631,11 @@ export default class ExplorerStore extends BaseStore<Document> {
   }
 
   @action
-  archive = async (document: Document) => {
+  archive = async (document: Explorer) => {
     const res = await client.post("/documents.archive", {
       id: document.id,
     });
-    runInAction("Document#archive", () => {
+    runInAction("Explorer#archive", () => {
       invariant(res && res.data, "Data should be available");
       document.updateFromJson(res.data);
       this.addPolicies(res.policies);
@@ -647,7 +647,7 @@ export default class ExplorerStore extends BaseStore<Document> {
 
   @action
   restore = async (
-    document: Document,
+    document: Explorer,
     options: { revisionId?: string, collectionId?: string } = {}
   ) => {
     const res = await client.post("/documents.restore", {
@@ -655,7 +655,7 @@ export default class ExplorerStore extends BaseStore<Document> {
       revisionId: options.revisionId,
       collectionId: options.collectionId,
     });
-    runInAction("Document#restore", () => {
+    runInAction("Explorer#restore", () => {
       invariant(res && res.data, "Data should be available");
       document.updateFromJson(res.data);
       this.addPolicies(res.policies);
@@ -666,12 +666,12 @@ export default class ExplorerStore extends BaseStore<Document> {
   };
 
   @action
-  unpublish = async (document: Document) => {
+  unpublish = async (document: Explorer) => {
     const res = await client.post("/documents.unpublish", {
       id: document.id,
     });
 
-    runInAction("Document#unpublish", () => {
+    runInAction("Explorer#unpublish", () => {
       invariant(res && res.data, "Data should be available");
       document.updateFromJson(res.data);
       this.addPolicies(res.policies);
@@ -681,15 +681,15 @@ export default class ExplorerStore extends BaseStore<Document> {
     if (collection) collection.refresh();
   };
 
-  pin = (document: Document) => {
+  pin = (document: Explorer) => {
     return client.post("/documents.pin", { id: document.id });
   };
 
-  unpin = (document: Document) => {
+  unpin = (document: Explorer) => {
     return client.post("/documents.unpin", { id: document.id });
   };
 
-  star = async (document: Document) => {
+  star = async (document: Explorer) => {
     this.starredIds.set(document.id, true);
 
     try {
@@ -699,7 +699,7 @@ export default class ExplorerStore extends BaseStore<Document> {
     }
   };
 
-  unstar = (document: Document) => {
+  unstar = (document: Explorer) => {
     this.starredIds.set(document.id, false);
 
     try {
@@ -709,11 +709,11 @@ export default class ExplorerStore extends BaseStore<Document> {
     }
   };
 
-  getByUrl = (url: string = ""): ?Document => {
+  getByUrl = (url: string = ""): ?Explorer => {
     return find(this.orderedData, (doc) => url.endsWith(doc.urlId));
   };
 
-  getCollectionForDocument(document: Document) {
+  getCollectionForDocument(document: Explorer) {
     return this.rootStore.collections.data.get(document.collectionId);
   }
 }

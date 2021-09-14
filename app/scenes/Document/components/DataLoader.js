@@ -74,7 +74,6 @@ class DataLoader extends React.Component<Props> {
     if (this.document) {
       const document = this.document;
       const policy = this.props.policies.get(document.id);
-
       if (
         !policy &&
         !this.error &&

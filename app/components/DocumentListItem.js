@@ -66,7 +66,6 @@ function DocumentListItem(props: Props, ref) {
   const canStar =
     !document.isDraft && !document.isArchived && !document.isTemplate;
   const can = policies.abilities(currentTeam.id);
-  console.log("Can policy in DocumentListItem", can);
   const canCollection = policies.abilities(document.collectionId);
 
   return (
