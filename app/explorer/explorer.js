@@ -23,8 +23,9 @@ export default function Explorer() {
   const Login = React.lazy(() =>
     import(/* webpackChunkName: "login" */ "scenes/Login")
   );
-  explorer.fetchRecentlyUpdated();
-
+  const initial = async () => {
+    await explorer.fetchRecentlyUpdated();
+  };
   return (
     <Scene
       icon={<HomeIcon color="currentColor" />}
@@ -42,7 +43,6 @@ export default function Explorer() {
         <h1>{dataPost[1].title}</h1>
         <p>{dataPost[1].text}</p>
       </div> */}
-      {/* <h1>{posts}</h1> */}
       <Tabs>
         <Tab to="/" exact>
           {t("Recently viewed")}
