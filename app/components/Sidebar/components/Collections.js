@@ -95,7 +95,7 @@ function Collections({ onCreateCollection }: Props) {
       ))}
       {can.createCollection && (
         <SidebarLink
-          to="/collections"
+          to="/home/collections"
           onClick={onCreateCollection}
           icon={<PlusIcon color="currentColor" />}
           label={`${t("New collection")}…`}

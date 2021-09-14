@@ -111,7 +111,7 @@ function MainSidebar() {
               />
               {can.createDocument && (
                 <SidebarLink
-                  to="/drafts"
+                  to="/home/drafts"
                   icon={<EditIcon color="currentColor" />}
                   label={
                     <Drafts align="center">
@@ -139,7 +139,7 @@ function MainSidebar() {
               {can.createDocument && (
                 <>
                   <SidebarLink
-                    to="/templates"
+                    to="/home/templates"
                     icon={<ShapesIcon color="currentColor" />}
                     exact={false}
                     label={t("Templates")}

@@ -41,10 +41,10 @@ function Templates(props: Props) {
       <PaginatedDocumentList
         heading={
           <Tabs>
-            <Tab to="/templates" exact>
+            <Tab to="/home/templates" exact>
               {t("Recently updated")}
             </Tab>
-            <Tab to="/templates/alphabetical" exact>
+            <Tab to="/home/templates/alphabetical" exact>
               {t("Alphabetical")}
             </Tab>
           </Tabs>

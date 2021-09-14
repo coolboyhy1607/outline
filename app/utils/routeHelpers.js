@@ -8,7 +8,7 @@ export function homeUrl(): string {
 }
 
 export function newCollectionUrl(): string {
-  return "/collection/new";
+  return "/home/collection/new";
 }
 
 export function collectionUrl(url: string, section: ?string): string {
@@ -22,7 +22,7 @@ export function updateCollectionUrl(
 ): string {
   // Update url to match the current one
   return oldUrl.replace(
-    new RegExp("/collection/[0-9a-zA-Z-_~]*"),
+    new RegExp("/home/collection/[0-9a-zA-Z-_~]*"),
     collection.url
   );
 }
@@ -51,7 +51,7 @@ export function documentHistoryUrl(doc: Document, revisionId?: string): string {
  */
 export function updateDocumentUrl(oldUrl: string, document: Document): string {
   // Update url to match the current one
-  return oldUrl.replace(new RegExp("/doc/[0-9a-zA-Z-_~]*"), document.url);
+  return oldUrl.replace(new RegExp("/home/doc/[0-9a-zA-Z-_~]*"), document.url);
 }
 
 export function newDocumentUrl(
@@ -62,7 +62,9 @@ export function newDocumentUrl(
     template?: boolean,
   }
 ): string {
-  return `/collection/${collectionId}/new?${queryString.stringify(params)}`;
+  return `/home/collection/${collectionId}/new?${queryString.stringify(
+    params
+  )}`;
 }
 
 export function searchUrl(
@@ -73,7 +75,7 @@ export function searchUrl(
   }
 ): string {
   let search = queryString.stringify(params);
-  let route = "/search";
+  let route = "/home/search";
 
   if (query) {
     route += `/${encodeURIComponent(query.replace("%", "%25"))}`;
@@ -90,4 +92,4 @@ export function notFoundUrl(): string {
 export const matchDocumentSlug =
   ":documentSlug([0-9a-zA-Z-_~]*-[a-zA-z0-9]{10,15})";
 
-export const matchDocumentEdit = `/doc/${matchDocumentSlug}/edit`;
+export const matchDocumentEdit = `/home/doc/${matchDocumentSlug}/edit`;

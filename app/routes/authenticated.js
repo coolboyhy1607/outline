@@ -48,26 +48,38 @@ export default function AuthenticatedRoutes() {
             <Redirect from="/dashboard" to="/home" />
             <Route path="/home/:tab" component={Home} />
             <Route path="/home" component={Home} />
-            <Route exact path="/templates" component={Templates} />
-            <Route exact path="/templates/:sort" component={Templates} />
-            <Route exact path="/drafts" component={Drafts} />
-            <Route exact path="/archive" component={Archive} />
-            <Route exact path="/trash" component={Trash} />
-            <Redirect exact from="/starred" to="/home" />
-            <Redirect exact from="/collections/*" to="/collection/*" />
-            <Route exact path="/collection/:id/new" component={DocumentNew} />
-            <Route exact path="/collection/:id/:tab" component={Collection} />
-            <Route exact path="/collection/:id" component={Collection} />
-            <Route exact path={`/d/${slug}`} component={RedirectDocument} />
+            <Route exact path="/home/templates" component={Templates} />
+            <Route exact path="/home/templates/:sort" component={Templates} />
+            <Route exact path="/home/drafts" component={Drafts} />
+            <Route exact path="/home/archive" component={Archive} />
+            <Route exact path="/home/trash" component={Trash} />
+            <Redirect exact from="/home/starred" to="/home" />
+            <Redirect exact from="/home/collections/*" to="/collection/*" />
             <Route
               exact
-              path={`/doc/${slug}/history/:revisionId?`}
+              path="/home/collection/:id/new"
+              component={DocumentNew}
+            />
+            <Route
+              exact
+              path="/home/collection/:id/:tab"
+              component={Collection}
+            />
+            <Route exact path="/home/collection/:id" component={Collection} />
+            <Route
+              exact
+              path={`/home/d/${slug}`}
+              component={RedirectDocument}
+            />
+            <Route
+              exact
+              path={`/home/doc/${slug}/history/:revisionId?`}
               component={Document}
             />
-            <Route exact path={`/doc/${slug}/edit`} component={Document} />
-            <Route path={`/doc/${slug}`} component={Document} />
-            <Route exact path="/search" component={Search} />
-            <Route exact path="/search/:term" component={Search} />
+            <Route exact path={`/home/doc/${slug}/edit`} component={Document} />
+            <Route path={`/home/doc/${slug}`} component={Document} />
+            <Route exact path="/home/search" component={Search} />
+            <Route exact path="/home/search/:term" component={Search} />
             <Route path="/404" component={Error404} />
 
             <SettingsRoutes />

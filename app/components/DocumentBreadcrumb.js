@@ -29,28 +29,28 @@ function useCategory(document) {
     return {
       icon: <TrashIcon color="currentColor" />,
       title: t("Trash"),
-      to: "/trash",
+      to: "/home/trash",
     };
   }
   if (document.isArchived) {
     return {
       icon: <ArchiveIcon color="currentColor" />,
       title: t("Archive"),
-      to: "/archive",
+      to: "/home/archive",
     };
   }
   if (document.isDraft) {
     return {
       icon: <EditIcon color="currentColor" />,
       title: t("Drafts"),
-      to: "/drafts",
+      to: "/home/drafts",
     };
   }
   if (document.isTemplate) {
     return {
       icon: <ShapesIcon color="currentColor" />,
       title: t("Templates"),
-      to: "/templates",
+      to: "/home/templates",
     };
   }
   return null;

@@ -33,7 +33,7 @@ function TrashLink({ documents }) {
     <>
       <div ref={dropToTrashDocument}>
         <SidebarLink
-          to="/trash"
+          to="/home/trash"
           icon={<TrashIcon color="currentColor" open={isDocumentDropping} />}
           exact={false}
           label={t("Trash")}

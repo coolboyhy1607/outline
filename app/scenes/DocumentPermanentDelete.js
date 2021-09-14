@@ -30,7 +30,7 @@ function DocumentPermanentDelete({ document, onSubmit }: Props) {
         await documents.delete(document, { permanent: true });
         showToast(t("Document permanently deleted"), { type: "success" });
         onSubmit();
-        history.push("/trash");
+        history.push("/home/trash");
       } catch (err) {
         showToast(err.message, { type: "error" });
       } finally {

@@ -162,7 +162,7 @@ class Layout extends React.Component<Props> {
           <React.Suspense>
             <Switch>
               <Route
-                path={`/doc/${slug}/history/:revisionId?`}
+                path={`/home/doc/${slug}/history/:revisionId?`}
                 component={DocumentHistory}
               />
             </Switch>

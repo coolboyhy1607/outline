@@ -29,7 +29,7 @@ function ArchiveLink({ documents }) {
   return (
     <div ref={dropToArchiveDocument}>
       <SidebarLink
-        to="/archive"
+        to="/home/archive"
         icon={<ArchiveIcon color="currentColor" open={isDocumentDropping} />}
         exact={false}
         label={t("Archive")}
