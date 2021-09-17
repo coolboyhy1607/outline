@@ -114,7 +114,7 @@ function Starred() {
         key={document.id}
         documentId={document.id}
         collectionId={document.collectionId}
-        to={document.url}
+        to={`/home${document.url}`}
         title={document.title}
         url={document.url}
         depth={2}

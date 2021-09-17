@@ -102,7 +102,7 @@ function MainSidebar() {
               />
               <SidebarLink
                 to={{
-                  pathname: "/search",
+                  pathname: "/home/search",
                   state: { fromMenu: true },
                 }}
                 icon={<SearchIcon color="currentColor" />}
