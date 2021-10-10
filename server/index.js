@@ -2,7 +2,7 @@
 // eslint-disable-next-line import/order
 import env from "./env"; // eslint-disable-line import/order
 import "./tracing"; // must come before importing any instrumented module
-import http from "http";
+import https from "http";
 import Koa from "koa";
 import compress from "koa-compress";
 import helmet from "koa-helmet";
@@ -19,11 +19,11 @@ import { getArg } from "./utils/args";
 import { checkEnv, checkMigrations } from "./utils/startup";
 import { checkUpdates } from "./utils/updates";
 
-// const fs = require("fs");
-// const options = {
-//   key: fs.readFileSync("./server/localhost-key.pem"),
-//   cert: fs.readFileSync("./server/localhost.pem"),
-// };
+const fs = require("fs");
+const options = {
+  key: fs.readFileSync("./server/localhost-key.pem"),
+  cert: fs.readFileSync("./server/localhost.pem"),
+};
 
 // If a services flag is passed it takes priority over the enviroment variable
 // for example: --services=web,worker
@@ -31,17 +31,11 @@ const normalizedServiceFlag = getArg("services");
 
 // The default is to run all services to make development and OSS installations
 // easier to deal with. Separate services are only needed at scale.
-const serviceNames = uniq(
-  (normalizedServiceFlag || env.SERVICES || "websockets,worker,web")
-    .split(",")
-    .map((service) => service.trim())
-);
+const serviceNames = uniq((normalizedServiceFlag || env.SERVICES || "websockets,worker,web").split(",").map((service) => service.trim()));
 
 // The number of processes to run, defaults to the number of CPU's available
 // for the web service, and 1 for collaboration during the beta period.
-const processCount = serviceNames.includes("collaboration")
-  ? 1
-  : env.WEB_CONCURRENCY || undefined;
+const processCount = serviceNames.includes("collaboration") ? 1 : env.WEB_CONCURRENCY || undefined;
 
 // This function will only be called once in the original process
 function master() {
@@ -60,7 +54,7 @@ async function start(id: string, disconnect: () => void) {
   const normalizedPortFlag = getArg("port", "p");
 
   const app = new Koa();
-  const server = stoppable(http.createServer(app.callback()));
+  const server = stoppable(https.createServer(app.callback(), options));
   const router = new Router();
 
   // install basic middleware shared by all services
@@ -78,13 +72,8 @@ async function start(id: string, disconnect: () => void) {
   router.get("/_health", (ctx) => (ctx.body = "OK"));
   app.use(router.routes());
 
-  if (
-    serviceNames.includes("websockets") &&
-    serviceNames.includes("collaboration")
-  ) {
-    throw new Error(
-      "Cannot run websockets and collaboration services in the same process"
-    );
+  if (serviceNames.includes("websockets") && serviceNames.includes("collaboration")) {
+    throw new Error("Cannot run websockets and collaboration services in the same process");
   }
 
   // loop through requested services at startup
